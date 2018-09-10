@@ -21,6 +21,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(passport.initialize());
 app.use(passport.session());
 
+passport.use(new LocalStrategy(User.authenticate()));
 // Takes data, encodes it, and puts back into session
 passport.serializeUser(User.serializeUser());
 // Reads session, takes data and unencodes it
@@ -57,7 +58,18 @@ app.post("/register", function(req, res){
     });
 });
 
+// Render login form
+app.get("/login", function(req, res) {
+    res.render("login");
+});
 
+// Login logic
+app.post("/login", passport.authenticate("local", {
+    successRedirect: "/secret",
+    failureRedirect: "/login"
+}), function(req, res){
+    
+});
 
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("Server has started...");
